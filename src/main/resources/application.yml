@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://124.222.161.123:3306/xm_db?useUnicode=true&rewriteBatchedStatements=TRUE&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: mAou864.
+    druid:
+      connection-error-retry-attempts: 5
+      break-after-acquire-failure: true
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  configuration:
+    log-impl:
+      org.apache.ibatis.logging.stdout.StdOutImpl
+expireTime: 1000*60*60*24
