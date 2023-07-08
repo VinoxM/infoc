@@ -14,3 +14,11 @@ mybatis:
     log-impl:
       org.apache.ibatis.logging.stdout.StdOutImpl
 expireTime: 1000*60*60*24
+
+rest:
+  proxy:
+    enable: true
+    host: 127.0.0.1
+    port: 1080
+  readTimeout: 35000
+  connectTimeout: 5000

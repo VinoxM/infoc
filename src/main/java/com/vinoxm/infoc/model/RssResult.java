@@ -21,6 +21,15 @@ public class RssResult {
     @Column(nullable = false)
     private String torrent;
 
+    public RssResult(long pid, String title, String torrent) {
+        this.pid = pid;
+        this.title = title;
+        this.torrent = torrent;
+    }
+
+    public RssResult() {
+    }
+
     @Override
     public String toString() {
         return "RssResult{" +

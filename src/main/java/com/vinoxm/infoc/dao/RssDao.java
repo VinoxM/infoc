@@ -4,6 +4,7 @@ import com.vinoxm.infoc.model.RssResult;
 import com.vinoxm.infoc.model.RssSubscribe;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface RssDao extends BaseDao{
     void insertOneResult(RssResult rss);
 
     @Insert({"<script>" +
-            "INSERT INTO rss_result" +
+            "INSERT IGNORE INTO rss_result" +
             "(pid, title, torrent) " +
             "VALUES " +
             "<foreach collection='list' item='item' separator=','>" +
@@ -34,4 +35,7 @@ public interface RssDao extends BaseDao{
             "</foreach>" +
             "</script>"})
     void insertManyResult(@Param(value = "list") List<RssResult> rssResultsList);
+
+    @Select("SELECT id,name,regex,url,season FROM rss_subscribe WHERE season=#{season}")
+    List<RssSubscribe> getRssSubscribeBySeason(String season);
 }
