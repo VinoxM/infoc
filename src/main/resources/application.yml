@@ -22,3 +22,5 @@ rest:
     port: 1080
   readTimeout: 35000
   connectTimeout: 5000
+schedule:
+  corn: '0 0/30 * * * ?'

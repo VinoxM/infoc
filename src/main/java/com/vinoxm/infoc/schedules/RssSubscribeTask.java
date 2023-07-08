@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -29,10 +30,11 @@ public class RssSubscribeTask {
     }
 
     private List<RssSubscribe> getRssSubscribe() {
-        String season = "2023-04";//new SimpleDateFormat("yyyy-MM").format(new Date());
-        List<RssSubscribe> list = rssDao.getRssSubscribeBySeason(season);
-//        log.info(String.format("getRssSubscribe -> %s", list.toString()));
-        return list;
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int round = (Math.round((float) month / 3)) * 3 + 1;
+        String season = calendar.get(Calendar.YEAR) + "-" + (round < 10 ? "0" : "") + round;
+        return rssDao.getRssSubscribeBySeason(season);
     }
 
     private void subscribeRss(List<RssSubscribe> list) {
@@ -61,7 +63,7 @@ public class RssSubscribeTask {
         return null;
     }
 
-    @Scheduled(fixedDelay = 100000)
+    @Scheduled(cron = "${schedule.corn}")
     public void test() {
         List<RssSubscribe> list = getRssSubscribe();
         subscribeRss(list);
