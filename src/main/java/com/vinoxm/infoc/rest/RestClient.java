@@ -8,16 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.HashMap;
-import java.util.Objects;
 
 @Component
 @Log4j2
@@ -42,7 +36,7 @@ public class RestClient {
         return restTemplate.exchange(url, HttpMethod.GET, httpEntity, clazz, params).getBody();
     }
 
-    public static <T> T getRssSubscribeByUrl(String url, Class<T> clazz) {
+    public static <T> T getRssSubscribeByUrl(String url, Class<T> clazz) throws Exception {
         try {
             URL u = new URL(url);
             String query = u.getQuery();
@@ -56,7 +50,7 @@ public class RestClient {
                     uri.append(String.format("%s={%s}&", split[0], split[0]));
                 }
             }
-            log.info(String.format("%s\tparams -> %s", uri, params));
+            log.info(String.format("[RestClient request] %s", URLDecoder.decode(url, "utf-8")));
             return restTemplate.getForObject(uri.toString(), clazz, params);
         } catch (MalformedURLException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

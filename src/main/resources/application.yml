@@ -13,6 +13,10 @@ mybatis:
   configuration:
     log-impl:
       org.apache.ibatis.logging.stdout.StdOutImpl
+  configuration-properties:
+    offsetAsPageNum: true
+    rowBoundsWithCount: true
+    reasonable: true
 expireTime: 1000*60*60*24
 
 rest:

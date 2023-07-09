@@ -2,6 +2,7 @@ package com.vinoxm.infoc.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.vinoxm.infoc.annotions.NeedAuth;
+import com.vinoxm.infoc.annotions.NeedSecret;
 import com.vinoxm.infoc.exceptions.AuthException;
 import com.vinoxm.infoc.model.User;
 import com.vinoxm.infoc.utils.BaseContextHolder;
@@ -12,12 +13,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
-import java.util.Map;
 
 @Component
 @Log4j2
@@ -27,6 +25,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             HandlerMethod mHandler = (HandlerMethod) handler;
+
             // Author validate
             NeedAuth needAuth = mHandler.getMethodAnnotation(NeedAuth.class);
             if (needAuth != null) {
@@ -46,8 +45,20 @@ public class GlobalInterceptor implements HandlerInterceptor {
                 BaseContextHolder.setUserInfo(user);
                 BaseContextHolder.setToken(token);
                 log.info("[Verify token] Success");
-                log.info("Access token request: [" + request.getMethod() + "] " + request.getRequestURI());
-                return true;
+            }
+
+            // Secret validate
+            NeedSecret needSecret = mHandler.getMethodAnnotation(NeedSecret.class);
+            if (needSecret != null) {
+                String secret = request.getHeader("secret");
+                if (StringUtils.isEmpty(secret)) {
+                    throw new AuthException("[" + request.getMethod() + "] " + request.getRequestURI(), "Secret is empty ");
+                }
+                log.info("[Verify Secret] " + secret);
+                if (!secret.equals(needSecret.value())) {
+                    throw new AuthException("[" + request.getMethod() + "] " + request.getRequestURI(), "Secret error ");
+                }
+                log.info("[Verify Secret] Success");
             }
         }
         log.info("Access request: [" + request.getMethod() + "] " + request.getRequestURI());

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -34,18 +35,35 @@ public class RssSubscribeTask {
         int month = calendar.get(Calendar.MONTH) + 1;
         int round = (Math.round((float) month / 3)) * 3 + 1;
         String season = calendar.get(Calendar.YEAR) + "-" + (round < 10 ? "0" : "") + round;
-        return rssDao.getRssSubscribeBySeason(season);
+        List<RssSubscribe> list = new ArrayList<>(rssDao.selectRssSubscribeBySeason(season));
+        if (month % 3 == 1) {
+            if (month > 1) {
+                season = calendar.get(Calendar.YEAR) + "-0" + (round - 3);
+            } else {
+                season = (calendar.get(Calendar.YEAR) - 1) + "-10";
+            }
+            list.addAll(rssDao.selectRssSubscribeBySeason(season));
+        }
+        return list;
     }
 
     private void subscribeRss(List<RssSubscribe> list) {
         for (RssSubscribe rss : list) {
             String url = rss.getUrl();
             String regex = rss.getRegex();
-            String result = RestClient.getRssSubscribeByUrl(url, String.class);
-            RssVo rssVo = subscribeHandler(url, result);
-            if (rssVo != null) {
-                List<RssResult> results = rssVo.getRssItems(regex, rss.getId());
-                rssDao.insertManyResult(results);
+            try {
+                String result = RestClient.getRssSubscribeByUrl(url, String.class);
+                RssVo rssVo = subscribeHandler(url, result);
+                if (rssVo != null) {
+                    List<RssResult> results = rssVo.getRssItems(regex, rss.getId());
+                    int rows = 0;
+                    if (results.size() > 0) {
+                        rows = rssDao.insertManyResult(results);
+                    }
+                    log.info(String.format("[Rss subscribe] (%s) %s -> %s new results", rss.getSeason(), rss.getName(), rows));
+                }
+            } catch (Exception e) {
+                log.error(String.format("[Rss subscribe] (%s) %s -> \n\t%s", rss.getSeason(), rss.getName(), e.getMessage()));
             }
         }
     }
@@ -64,7 +82,9 @@ public class RssSubscribeTask {
     }
 
     @Scheduled(cron = "${schedule.corn}")
-    public void test() {
+//    @Scheduled(fixedDelay = 20000)
+    public void updateRssSubscribe() {
+        log.info("[Schedule start] Update Rss Subscribe");
         List<RssSubscribe> list = getRssSubscribe();
         subscribeRss(list);
     }

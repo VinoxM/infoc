@@ -3,6 +3,7 @@ package com.vinoxm.infoc.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Table(name = "rss_subscribe")
 @Data
@@ -23,6 +24,8 @@ public class RssSubscribe {
 
     @Column(nullable = false)
     private String season;
+
+    private List<RssResult> result;
 
     @Override
     public String toString() {
