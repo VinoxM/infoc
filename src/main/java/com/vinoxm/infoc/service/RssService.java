@@ -44,12 +44,16 @@ public class RssService extends BaseService<RssDao> {
         return DataResult.Success(baseDao.selectOneById(id));
     }
 
-    public BaseResult selAllRssSubsBySearch(PagerVo<RssSubscribe> pager, HashMap<String, Object> params) {
+    public BaseResult selSearchRssSubsWithPage(PagerVo<RssSubscribe> pager, HashMap<String, Object> params) {
         Page<Object> page = PageHelper.startPage(pager.getPageNum(), pager.getPageSize());
         List<RssSubscribe> list = baseDao.selectAll(params);
         pager.setData(list);
         pager.setTotal(page.getTotal());
         return DataResult.Success(pager);
+    }
+
+    public BaseResult selSearchRssSubs(HashMap<String, Object> params) {
+        return DataResult.Success(baseDao.selectAll(params));
     }
 
     public BaseResult editOneRssSubsById(RssSubscribe rssSubscribe) {
@@ -59,5 +63,9 @@ public class RssService extends BaseService<RssDao> {
         }
         baseDao.updateOneById(rssSubscribe);
         return BaseResult.Success();
+    }
+
+    public BaseResult selSeason() {
+        return DataResult.Success(baseDao.selRssSubscribeSeason());
     }
 }

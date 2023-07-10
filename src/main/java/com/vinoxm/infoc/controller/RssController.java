@@ -39,21 +39,33 @@ public class RssController extends BaseController<RssService>{
         return baseService.delManyRssSubs(array);
     }
 
-    @GetMapping("selOne")
+    @GetMapping("getOne")
     @NeedSecret
     public BaseResult selOne(long id) {
         return baseService.selOneRssSubs(id);
     }
 
-    @PostMapping("selAll")
+    @PostMapping("getSearch.page")
     @NeedSecret
-    public BaseResult selAll(@RequestBody PagerVo<RssSubscribe> pager,@RequestParam HashMap<String, Object> params) {
-        return baseService.selAllRssSubsBySearch(pager, params);
+    public BaseResult selSearchWithPage(@RequestBody PagerVo<RssSubscribe> pager,@RequestParam HashMap<String, Object> params) {
+        return baseService.selSearchRssSubsWithPage(pager, params);
+    }
+
+    @GetMapping("getSearch")
+    @NeedSecret
+    public BaseResult selSearch(@RequestParam HashMap<String, Object> params) {
+        return baseService.selSearchRssSubs(params);
     }
 
     @PostMapping("editOne")
     @NeedSecret
     public BaseResult editOne(@RequestBody RssSubscribe rssSubscribe) {
         return baseService.editOneRssSubsById(rssSubscribe);
+    }
+
+    @GetMapping("getSeason")
+    @NeedSecret
+    public BaseResult selSeason() {
+        return baseService.selSeason();
     }
 }

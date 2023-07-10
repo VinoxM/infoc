@@ -59,10 +59,18 @@ public interface RssDao extends BaseDao{
             "season=#{season} " +
             "</if>" +
             "<if test='name!=null'>" +
-            "AND name LIKE %#{name}% " +
+            "AND name LIKE CONCAT('%',#{name},'%') " +
             "</if>" +
             "</where>" +
             "</script>")
+    @Results(value = {
+            @Result(column = "id", property = "id", id = true),
+            @Result(column = "name", property = "name"),
+            @Result(column = "url", property = "url"),
+            @Result(column = "regex", property = "regex"),
+            @Result(column = "season", property = "season"),
+            @Result(column = "id", property = "result", javaType = ArrayList.class, many = @Many(select = "com.vinoxm.infoc.dao.RssDao.selectResultByPid"))
+    })
     List<RssSubscribe> selectAll(HashMap<String, Object> params);
 
     @Select("SELECT id,name,url,regex,season FROM rss_subscribe WHERE id=#{id}")
@@ -84,4 +92,7 @@ public interface RssDao extends BaseDao{
 
     @Delete("DELETE FROM rss_result WHERE pid=#{pid}")
     void deleteManyRssResultByPid(long pid);
+
+    @Select("SELECT season FROM rss_subscribe GROUP BY season")
+    List<String> selRssSubscribeSeason();
 }
