@@ -1,8 +1,11 @@
 package com.vinoxm.infoc.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.vinoxm.infoc.annotions.NeedSecret;
 import com.vinoxm.infoc.model.RssSubscribe;
 import com.vinoxm.infoc.result.BaseResult;
+import com.vinoxm.infoc.result.DataResult;
+import com.vinoxm.infoc.schedules.RssSubscribeTask;
 import com.vinoxm.infoc.service.RssService;
 import com.vinoxm.infoc.vo.PagerVo;
 import lombok.extern.log4j.Log4j2;
@@ -31,6 +34,12 @@ public class RssController extends BaseController<RssService>{
     @NeedSecret
     public BaseResult delOne(@RequestBody RssSubscribe json) {
         return baseService.delOneRssSubs(json);
+    }
+
+    @PostMapping("delOne.results")
+    @NeedSecret
+    public BaseResult delOneResults(@RequestBody RssSubscribe json) {
+        return baseService.delOneRssSubsResultsById(json);
     }
 
     @PostMapping("delMany")
@@ -67,5 +76,11 @@ public class RssController extends BaseController<RssService>{
     @NeedSecret
     public BaseResult selSeason() {
         return baseService.selSeason();
+    }
+
+    @PostMapping("subsTest")
+    @NeedSecret
+    public BaseResult rssTest(@RequestBody RssSubscribe rss) {
+        return DataResult.Success(baseService.subscribeRssTest(rss));
     }
 }

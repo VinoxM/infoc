@@ -1,6 +1,7 @@
 package com.vinoxm.infoc.vo;
 
 import com.vinoxm.infoc.model.RssResult;
+import com.vinoxm.infoc.utils.StringUtils;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,16 +18,22 @@ public class RssVo {
         if (channel != null) {
             List<Item> items = channel.getItem();
             if (items != null) {
-                String[] regex = regexStr.split(",");
-                for (Item item : items) {
-                    int flag = 0;
-                    for (String reg : regex) {
-                        if (Pattern.matches(reg.toUpperCase(), item.getTitle().toUpperCase())) {
-                            flag++;
-                        }
-                    }
-                    if (flag == regex.length) {
+                if (StringUtils.isEmpty(regexStr)) {
+                    for (Item item : items) {
                         list.add(new RssResult(pid, item.getTitle(), item.getEnclosure().getUrl()));
+                    }
+                } else {
+                    String[] regex = regexStr.split(",");
+                    for (Item item : items) {
+                        int flag = 0;
+                        for (String reg : regex) {
+                            if (Pattern.matches(reg.toUpperCase(), item.getTitle().toUpperCase())) {
+                                flag++;
+                            }
+                        }
+                        if (flag == regex.length) {
+                            list.add(new RssResult(pid, item.getTitle(), item.getEnclosure().getUrl()));
+                        }
                     }
                 }
             }
