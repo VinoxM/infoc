@@ -8,6 +8,16 @@ spring:
     druid:
       connection-error-retry-attempts: 5
       break-after-acquire-failure: true
+  redis:
+    host: 124.222.161.123
+    port: 6379
+    password: redis-mAou864
+    database: 1
+    lettuce:
+      pool:
+        max-idle: 16
+        max-active: 32
+        min-idle: 8
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/*.xml
   configuration:
@@ -17,8 +27,9 @@ mybatis:
     offsetAsPageNum: true
     rowBoundsWithCount: true
     reasonable: true
-expireTime: 1000*60*60*24
-
+jwt:
+  token:
+    expireTime: 1000*60*60*24
 rest:
   proxy:
     enable: true
@@ -28,3 +39,6 @@ rest:
   connectTimeout: 5000
 schedule:
   corn: '0 0/30 * * * ?'
+redis:
+  rss:
+    expireTime: 60*20

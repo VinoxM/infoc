@@ -52,11 +52,16 @@ public class BaseResult {
         return new BaseResult(AUTH_ERROR, "Auth Error: " + message);
     }
 
+    public static BaseResult RssUpdatingError() {
+        return new BaseResult(RSS_UPDATING_ERROR, "RSS Updating...Please wait.");
+    }
+
     public static final long SUCCESS = 0;
     public static final long FAILED = 500;
     public static final long SERVER_ERROR = 501;
     public static final long BUSINESS_ERROR = 502;
     public static final long VALIDATE_ERROR = 503;
+    public static final long RSS_UPDATING_ERROR = 504;
     public static final long AUTH_ERROR = -1000;
     public static final long USER_NOT_EXISTS = -2001;
     public static final long PASSWORD_ERROR = -2002;

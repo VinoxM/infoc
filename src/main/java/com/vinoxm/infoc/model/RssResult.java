@@ -3,28 +3,23 @@ package com.vinoxm.infoc.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
 
-@Table(name = "rss_result")
 @Data
 public class RssResult {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(nullable = false)
     private long pid;
-
-    @Column(nullable = false)
     private String title;
-
-    @Column(nullable = false)
     private String torrent;
+    private Date pubDate;
 
-    public RssResult(long pid, String title, String torrent) {
+    public RssResult(long pid, String title, String torrent, Date pubDate) {
         this.pid = pid;
         this.title = title;
         this.torrent = torrent;
+        this.pubDate = pubDate;
     }
 
     public RssResult() {
@@ -38,5 +33,18 @@ public class RssResult {
                 ", title='" + title + '\'' +
                 ", torrent='" + torrent + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RssResult rssResult = (RssResult) o;
+        return id == rssResult.id && pid == rssResult.pid;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pid);
     }
 }

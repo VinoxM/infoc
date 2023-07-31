@@ -3,28 +3,20 @@ package com.vinoxm.infoc.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-@Table(name = "rss_subscribe")
 @Data
 public class RssSubscribe {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String url;
-
-    @Column(nullable = false)
     private String regex;
-
-    @Column(nullable = false)
     private String season;
-
+    private Date startTime;
+    private String cover;
     private List<RssResult> result;
 
     @Override
@@ -36,5 +28,18 @@ public class RssSubscribe {
                 ", regex=" + regex +
                 ", season='" + season + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RssSubscribe that = (RssSubscribe) o;
+        return id == that.id && Objects.equals(name, that.name) && Objects.equals(season, that.season);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, season);
     }
 }

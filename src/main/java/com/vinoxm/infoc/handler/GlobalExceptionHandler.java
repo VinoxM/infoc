@@ -2,6 +2,7 @@ package com.vinoxm.infoc.handler;
 
 import com.vinoxm.infoc.exceptions.AuthException;
 import com.vinoxm.infoc.exceptions.BusinessException;
+import com.vinoxm.infoc.exceptions.RssUpdatingException;
 import com.vinoxm.infoc.exceptions.ValidationException;
 import com.vinoxm.infoc.result.BaseResult;
 import lombok.extern.log4j.Log4j2;
@@ -39,5 +40,12 @@ public class GlobalExceptionHandler {
     BaseResult handleValidationException(ValidationException e) {
         log.error("[Validate error] " + e.getMessage());
         return BaseResult.ValidateError(e.getMessage());
+    }
+
+    @ExceptionHandler(RssUpdatingException.class)
+    @ResponseBody
+    BaseResult handleRssUpdatingException(RssUpdatingException e) {
+        log.error("[RSS error] " + e.getMessage());
+        return BaseResult.RssUpdatingError();
     }
 }

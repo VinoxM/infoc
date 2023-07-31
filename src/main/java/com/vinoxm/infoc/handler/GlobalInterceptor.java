@@ -1,15 +1,19 @@
 package com.vinoxm.infoc.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.vinoxm.infoc.annotions.AwaitRssUpdate;
 import com.vinoxm.infoc.annotions.NeedAuth;
 import com.vinoxm.infoc.annotions.NeedSecret;
 import com.vinoxm.infoc.exceptions.AuthException;
+import com.vinoxm.infoc.exceptions.RssUpdatingException;
 import com.vinoxm.infoc.model.User;
+import com.vinoxm.infoc.redis.RedisClient;
 import com.vinoxm.infoc.utils.BaseContextHolder;
 import com.vinoxm.infoc.utils.StringUtils;
 import com.vinoxm.infoc.utils.Token;
 import com.vinoxm.infoc.vo.TokenVo;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @Log4j2
 public class GlobalInterceptor implements HandlerInterceptor {
+
+    static RedisClient redisClient;
+
+    @Autowired
+    public void setRedisClient(RedisClient redisClient) {
+        GlobalInterceptor.redisClient = redisClient;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -59,6 +70,12 @@ public class GlobalInterceptor implements HandlerInterceptor {
                     throw new AuthException("[" + request.getMethod() + "] " + request.getRequestURI(), "Secret error ");
                 }
                 log.info("[Verify Secret] Success");
+            }
+
+            // Wait Rss Update
+            AwaitRssUpdate awaitRssUpdate = mHandler.getMethodAnnotation(AwaitRssUpdate.class);
+            if (awaitRssUpdate != null && redisClient.isRssUpdating()) {
+                throw new RssUpdatingException();
             }
         }
         log.info("Access request: [" + request.getMethod() + "] " + request.getRequestURI());

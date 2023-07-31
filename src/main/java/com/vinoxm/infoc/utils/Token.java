@@ -20,7 +20,7 @@ public class Token {
 
     private static long expire;
 
-    @Value("${expireTime}")
+    @Value("${jwt.token.expireTime}")
     public void setExpire(String expireTime) {
         String[] split = expireTime.split("\\*");
         long sum = 1;

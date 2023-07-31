@@ -3,14 +3,8 @@ package com.vinoxm.infoc.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Table(name = "admin_permission")
 public class Permission {
 
-    @Id
     @Setter
     @Getter
     private long id;
@@ -19,7 +13,6 @@ public class Permission {
     @Getter
     private String code;
 
-    @Column(name = "desc_")
     @Setter
     @Getter
     private String desc;
